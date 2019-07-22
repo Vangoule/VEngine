@@ -1,0 +1,6 @@
+000: <2019-07-22 : 22:44:27 - 864> ~ <ENGINE> : Initiating Window
+001: <2019-07-22 : 22:44:27 - 864> ~ <ENGINE> : Your computer supports: 
+002: <2019-07-22 : 22:44:27 - 864> ~ <ENGINE> : Depth Bits:24
+003: <2019-07-22 : 22:44:27 - 864> ~ <ENGINE> : Stencil Bits:8
+004: <2019-07-22 : 22:44:27 - 864> ~ <ENGINE> : Antialiasing Level:4
+005: <2019-07-22 : 22:44:27 - 864> ~ <ENGINE> : Version:4.6

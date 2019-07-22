@@ -70,11 +70,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Coding\C++\Requirements\SFML-2.5.1\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Coding\C++\Requirements\glm;C:\Coding\C++\Requirements\SFML-2.5.1\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Coding\C++\Requirements\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Coding\C++\Requirements\SFML-2.5.1\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Coding\C++\Requirements\glm;C:\Coding\C++\Requirements\SFML-2.5.1\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Coding\C++\Requirements\SFML-2.5.1\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -133,12 +133,35 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="GraphicsSystem.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="ScriptManager.cpp" />
+    <ClCompile Include="SystemManager.cpp" />
     <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Component.h" />
     <ClInclude Include="Core.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="EventManager.h" />
+    <ClInclude Include="GraphicsComponent.h" />
+    <ClInclude Include="GraphicsSystem.h" />
+    <ClInclude Include="System.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Log.h" />
+    <ClInclude Include="Logger.h" />
+    <ClInclude Include="Manager.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="ScriptManager.h" />
+    <ClInclude Include="SystemManager.h" />
+    <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="WindowManager.h" />
+    <ClInclude Include="Scene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

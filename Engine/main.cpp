@@ -2,7 +2,7 @@
 #include "Core.h"
 int main()
 {
-	VEngine::Core* engine = new VEngine::Core();
+	VEngine::Engine* engine = new VEngine::Engine();
 
 	engine->init();
 

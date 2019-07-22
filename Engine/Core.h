@@ -3,9 +3,10 @@
 #include <iostream>
 
 #include "WindowManager.h"
+#include "InputManager.h"
 
 namespace VEngine {
-	class Core
+	class Engine
 	{
 	public:
 		void init();
@@ -14,7 +15,6 @@ namespace VEngine {
 		void shutdown();
 	private:
 
-		bool isRunning;
-		WindowManager* m_windowManager;
+		bool m_isRunning;
 	};
 }

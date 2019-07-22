@@ -1,44 +1,69 @@
+#pragma once
 #include "Core.h"
+
+#include "Entity.h"
+#include "Scene.h"
+
+#include "Component.h"
+#include "GraphicsComponent.h"
+#include "TransformComponent.h"
+
+#include "SceneManager.h"
+#include "SystemManager.h"
+
+#include "GraphicsSystem.h"
 
 namespace VEngine {
 
-	void Core::init()
+	void Engine::init()
 	{
 		std::cout << "Starting Engine" << std::endl;
 
-		isRunning = true;
+		m_isRunning = true;
 
-		m_windowManager = new WindowManager();	
+		WindowManager::get().Create(1920, 1080, "Game");
 
-		if(!m_windowManager->createWindow())
-		{
-			std::cout << "Window Failed to Create!" << std::endl;
-			shutdown();
-		}
-		
+		Scene* scene = new Scene();
+
+		Entity* e = scene->createEntity();
+		e->addComponent<TransformComponent>(glm::vec3(0, 10, 10));
+		e->addComponent<GraphicsComponent>();
+
+		GraphicsSystem* gs = new GraphicsSystem();
+		SystemManager::get().registerSystem(gs);
+
+		SceneManager::get().setScene(scene);
+				
+		run();
+	}
+
+	void Engine::run()
+	{
 		update();
-		
 	}
 
-	void Core::run()
+	void Engine::update()
 	{
-		
-	}
-
-	void Core::update()
-	{
-		while (isRunning)
+		while (m_isRunning)
 		{
-			if (!m_windowManager->update())
+			if (WindowManager::get().shouldClose())
+				shutdown();
+
+			InputManager::get().update();
+
+			if (InputManager::get().getKeyDown(sf::Keyboard::Escape))
 			{
-				std::cout << "Window Failed to Update!" << std::endl;
 				shutdown();
 			}
+
+			SystemManager::get().tick();
+
+			WindowManager::get().getHandle()->display();
 		}
 	}
 
-	void Core::shutdown()
+	void Engine::shutdown()
 	{
-		isRunning = false;
+		m_isRunning = false;
 	}
 }
