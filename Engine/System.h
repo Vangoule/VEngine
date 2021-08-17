@@ -1,5 +1,4 @@
 #pragma once
-#include "Scene.h"
 #include "EventManager.h"
 
 namespace VEngine {
@@ -8,10 +7,10 @@ namespace VEngine {
 	public:
 		virtual ~System() {}
 
-		virtual void init(Scene* scene) = 0;
+		virtual void init() = 0;
 
-		virtual void shutdown(Scene* scene) = 0;
+		virtual void shutdown() = 0;
 
-		virtual void tick(Scene* scene) = 0;
+		virtual void tick() = 0;
 	};
 }

@@ -258,7 +258,14 @@ namespace VEngine {
 	{
 	public:
 		SceneManager(void) { m_scene = nullptr; };
-		~SceneManager(void) {};
+		~SceneManager(void) {
+			m_scene->destroy();
+		};
+
+		void cleanupScene()
+		{
+			m_scene->destroy();
+		}
 
 		Scene* getScene() { return m_scene; };
 

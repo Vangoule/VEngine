@@ -14,8 +14,6 @@
 #include <string>
 #include <mutex>
 
-
-
 namespace Logger {
 	enum SeverityLevel
 	{
@@ -159,7 +157,7 @@ namespace Logger {
 	}
 
 
-	template< typename LogPolicy >
+	template<typename LogPolicy>
 	inline std::string Logger< LogPolicy >::getTime()
 	{
 		time_t     now = time(NULL);
@@ -170,7 +168,7 @@ namespace Logger {
 		return buf;
 	}
 
-	template< typename LogPolicy >
+	template<typename LogPolicy>
 	inline std::string Logger< LogPolicy >::getHeader()
 	{
 		std::stringstream header;

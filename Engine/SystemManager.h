@@ -16,13 +16,21 @@ namespace VEngine {
 	{
 	public:
 		SystemManager(void) { };
-		~SystemManager(void) {};
+		~SystemManager(void) {
+	
+		};
+
+		void shutdown()
+		{
+			for (auto* system : m_systems)
+			{
+				system->shutdown();
+			}
+		}
 
 		void unregisterSystem(System* system);
-
-		
+				
 		void enableSystem(System* system);
-
 
 		void disableSystem(System* system);
 

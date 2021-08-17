@@ -5,7 +5,7 @@
 
 static Logger::Logger<Logger::FileLogPolicy> m_log("log.txt");
 
-
+#define LOGGING_LEVEL_1
 
 #ifdef LOGGING_LEVEL_1
 
@@ -21,7 +21,7 @@ static Logger::Logger<Logger::FileLogPolicy> m_log("log.txt");
 #define LOG m_log.Print< Logger::SeverityLevel::Engine >
 #define GLOG m_log.Print< Logger::SeverityLevel::Game >
 #define ELOG m_log.Print< Logger::SeverityLevel::Error >
-#define LOG_WARN m_log.Print< Logger::SeverityLevel::Warning >
+#define WLOG m_log.Print< Logger::SeverityLevel::Warning >
 
 #endif
 

@@ -6,7 +6,7 @@
 #include <glm/gtx/transform.hpp>
 #include "Manager.h"
 #include "WindowManager.h"
-
+#include <GLFW/glfw3.h>
 namespace VEngine {
 
 
@@ -31,6 +31,8 @@ namespace VEngine {
 
 		static void setCursor(bool value);
 		static void setMousePosition(glm::vec2 pos);
+	
+		static void init();
 
 		static void update();
 
@@ -41,6 +43,9 @@ namespace VEngine {
 		bool firstMouse = false;
 
 	private:
-		static void getInput(sf::Event event);
+		static void getKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods);
+		static void getMouseInput(GLFWwindow* window, int button, int action, int mods);
+		static void getMouseMoved(GLFWwindow* window, double xpos, double ypos);
+
 	};
 }

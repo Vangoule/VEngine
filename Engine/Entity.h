@@ -4,11 +4,12 @@
 #include <string>
 #include <typeindex>
 #include "Component.h"
+#include <functional>
 
 namespace VEngine {
 	class Entity {
 	public:
-		Entity() { m_id = 0; m_isPendingDestroy = false; };
+		Entity() { m_id = 0; m_wasInit = false; m_isPendingDestroy = false; };
 		~Entity();
 
 		template <typename T>
@@ -51,6 +52,16 @@ namespace VEngine {
 			return nullptr;
 		}
 
+		template<typename T>
+		T getComponent()
+		{
+			auto it = m_components.find(std::type_index(typeid(T)));
+			if (it != m_components.end()) {
+				return ((T*)it->second);
+			}
+			return nullptr;
+		}
+
 		template <typename T>
 		bool has() {
 			auto it = m_components.find(std::type_index(typeid(T)));
@@ -58,6 +69,16 @@ namespace VEngine {
 				return true;
 			}
 			return false;
+		}
+
+		template<typename... Types>
+		bool with(typename std::common_type<std::function<void(ComponentHandle<Types>...)>>::type view)
+		{
+			if (!has<Types...>())
+				return false;
+
+			view(get<Types>()...);
+			return true;
 		}
 
 		bool isPendingDestroy() const
@@ -74,10 +95,21 @@ namespace VEngine {
 
 		void setId(int id) { m_id = id; };
 
+		void init()
+		{
+			m_wasInit = true;
+		}
+
+		bool getWasInit()
+		{
+			return m_wasInit;
+		}
+
 	private:
 		std::map<std::type_index, Component*> m_components;
 		int m_id;
 		bool m_isPendingDestroy;
+		bool m_wasInit;
 	};
 }
 

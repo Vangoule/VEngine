@@ -1,8 +1,9 @@
 #pragma once
 #include <iostream>
-
-#include <SFML/Network.hpp>
-#include <SFML/Window.hpp>
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <vulkan/vulkan.h>
 
 #include "Manager.h"
 
@@ -18,26 +19,33 @@ namespace VEngine {
 
 		void Create(int width, int height, std::string title);
 
-		sf::Window* getHandle() {
-			return &m_windowHndl;
+		GLFWwindow* getHandle() {
+			return m_window;
 		}
 
-		void setMousePos(int posx, int posy);
+		//void setMousePos(int posx, int posy);
 
-		sf::Vector2i getMousePos();
-
-		sf::Vector2u getSize();
+		//glm::vec2 getMousePos() {};
+		
+		glm::vec2 getSize() { return glm::vec2(m_width, m_height); };
 
 		void setSize(int x, int y) {
 			m_width = x;
 			m_height = y;
 		}
 
-		void Close();
+		void close();
 		bool shouldClose();
 
+		void destroy()
+		{
+			glfwDestroyWindow(m_window);
+			glfwTerminate();
+		}
+
+
 	private:
-		sf::Window m_windowHndl;
+		GLFWwindow* m_window;
 		int m_width, m_height;
 		std::string m_title;
 		bool m_shouldClose;

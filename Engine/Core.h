@@ -4,6 +4,8 @@
 
 #include "WindowManager.h"
 #include "InputManager.h"
+#include "SceneManager.h"
+#include "SystemManager.h"
 
 namespace VEngine {
 	class Engine
@@ -16,5 +18,10 @@ namespace VEngine {
 	private:
 
 		bool m_isRunning;
+		SystemManager* systemManager;
+		InputManager* inputManager;
+		SceneManager* sceneManager;
+		WindowManager* windowManager;
+
 	};
 }

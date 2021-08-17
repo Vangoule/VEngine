@@ -1,63 +1,119 @@
 #pragma once
 
-#include "SceneManager.h"
-
 #include "GraphicsSystem.h"
+
+#include "SceneManager.h"
+#include "EventManager.h"
 
 #include "GraphicsComponent.h"
 #include "TransformComponent.h"
 
 namespace VEngine {
 
-	void GraphicsSystem::init(class Scene* scene)
+	void GraphicsSystem::init()
 	{
+		EventManager* eventManager = &EventManager::get();
+		eventManager->subscribe<Events::OnEntityDestroyed>(this);
+		eventManager->subscribe<Events::OnEntityInit>(this);
+		eventManager->subscribe<Events::OnEntityCreated>(this);
 
+		m_renderer = new VulkanRenderer();
+		m_renderer->initVulkan((int)WindowManager::get().getSize().x, (int)WindowManager::get().getSize().y);
 	}
 
-	void GraphicsSystem::shutdown(class Scene* scene)
-	{
-		
-	}
-
-	void GraphicsSystem::receive(class Scene* scene, const Events::OnEntityCreated& event)
-	{
-		std::cout << "An entity was created!" << std::endl;
-	}
-
-	void GraphicsSystem::receive(class Scene* scene, const Events::OnEntityInit& event)
+	void GraphicsSystem::shutdown()
 	{
 
+		m_renderer->cleanup();
 	}
 
-	void GraphicsSystem::receive(class Scene* scene, const Events::OnEntityDestroyed& event)
+	void GraphicsSystem::receive(const Events::OnEntityCreated& event)
 	{
-		std::cout << "An entity was destroyed!" << std::endl;
+		GLOG( "An entity was created!");
 	}
 
-	void GraphicsSystem::receive(class Scene* scene, const Events::OnComponentRemoved<GraphicsComponent>& event)
+	void GraphicsSystem::receive(const Events::OnEntityInit& event)
 	{
+		GLOG("An entity was initialized!");
+		Entity* ent = event.entity;
 
-	}
-
-	void GraphicsSystem::tick(class Scene* scene) {
-
-		for (Entity* ent : SceneManager::get().each<GraphicsComponent>())
+		if (ent->has<GraphicsComponent>())
 		{
-			if (ent->get<TransformComponent>()->getPosition().x >= 10)
+			ComponentHandle<GraphicsComponent> gc = ent->get<GraphicsComponent>();
+
+			ModelCreateInfo modelCreateInfo;
+
+			if (ent->has<TransformComponent>())
 			{
-				SceneManager::get().getScene()->removeEntity(ent);
+				ComponentHandle<TransformComponent> tc = ent->get<TransformComponent>();
+				modelCreateInfo = ModelCreateInfo(glm::vec3(1.0f), glm::vec3(1.0f), tc->getPosition());
 			}
 			else
 			{
-				glm::vec3 pos = ent->get<TransformComponent>()->getPosition();
-				pos.x += 0.01f;
-				
-				ent->get<TransformComponent>()->setPosition(pos);
-				printf("%.3f\n", ent->get<TransformComponent>()->getPosition().x);
-
+				modelCreateInfo = ModelCreateInfo(glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 			}
+
+			
+			
+			if (gc->filename.size() != 0)
+			{
+				gc->model = new VulkanModelComponent();
+				gc->model->model = new Model();
+				gc->model->model->loadFromFile(gc->filename, vertexLayout, modelCreateInfo, m_renderer->getDevice(), m_renderer->getDevice()->getGraphicsQueue());
+			}
+			else
+			{
+				gc->model->model->device = m_renderer->getDevice()->getDevice();
+			}
+
+			m_renderer->pushBackModel(ent->getId(), gc->model);
+
+			
+
+			//m_renderer->createCommandBuffers();
+		}
+	}
+	bool refresh = false;
+	void GraphicsSystem::receive(const Events::OnEntityDestroyed& event)
+	{
+		GLOG("An entity was destroyed!");
+		Entity* ent = event.entity;
+
+		if (ent->has<GraphicsComponent>())
+		{
+			ComponentHandle<GraphicsComponent> gc = ent->get<GraphicsComponent>();
+			
+			vkDeviceWaitIdle(m_renderer->getDevice()->getDevice());
+			gc->model->model->destroy();
+			delete gc->model;
+			m_renderer->removeModel(ent->getId());
 		}
 
+		
+	}
+
+	void GraphicsSystem::receive(const Events::OnComponentRemoved<GraphicsComponent>& event)
+	{
+
+	}
+
+	void GraphicsSystem::tick() {
+
+		for (Entity* ent : SceneManager::get().each<GraphicsComponent>())
+		{
+			ComponentHandle<GraphicsComponent> gc = ent->get<GraphicsComponent>();
+			
+
+		}
+
+
+		if (m_renderer->sceneChanged)
+		{
+			m_renderer->updateCommandBuffers();
+			m_renderer->sceneChanged = false;
+		}
+
+		m_renderer->drawFrame();
 	}
 
 }

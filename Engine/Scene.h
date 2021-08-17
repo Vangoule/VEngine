@@ -3,6 +3,7 @@
 #include "Component.h"
 #include <vector>
 #include <functional>
+#include "EventManager.h"
 
 namespace VEngine {
 
@@ -24,14 +25,40 @@ namespace VEngine {
 			
 			m_entities.push_back(ent);
 
+			EventManager::get().emit<Events::OnEntityCreated>({ ent });
+
 			return ent;
+		}
+
+		void initEntity(Entity* ent)
+		{
+			ent->init();
+			EventManager::get().emit<Events::OnEntityInit>({ ent });
+		}
+
+		void initAll()
+		{
+			for (auto ent : m_entities)
+			{
+				if (!ent->getWasInit())
+				{
+					ent->init();
+					EventManager::get().emit<Events::OnEntityInit>({ ent });
+				}
+			}
+		}
+
+		void init(Entity* e)
+		{
+			e->init();
+			EventManager::get().emit<Events::OnEntityInit>({ e });
 		}
 
 		void removeEntity(Entity* ent, bool immediate = false);
 
 		bool cleanup();
 
-		void reset();
+		void destroy();
 		
 		size_t getEntityCount() const
 		{

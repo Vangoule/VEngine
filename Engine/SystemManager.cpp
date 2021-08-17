@@ -6,7 +6,7 @@ namespace VEngine {
 	System* SystemManager::registerSystem(System* system)
 	{
 		m_systems.push_back(system);
-		system->init(SceneManager::get().getScene());
+		system->init();
 
 		return system;
 	}
@@ -15,7 +15,7 @@ namespace VEngine {
 	{
 
 		m_systems.erase(std::remove(m_systems.begin(), m_systems.end(), system), m_systems.end());
-		system->shutdown(SceneManager::get().getScene());
+		system->shutdown();
 	}
 
 	void SystemManager::enableSystem(System* system)
@@ -44,7 +44,8 @@ namespace VEngine {
 
 		for (auto* system : m_systems)
 		{			
-			system->tick(SceneManager::get().getScene());
+			system->tick();
 		}
 	}
+
 }

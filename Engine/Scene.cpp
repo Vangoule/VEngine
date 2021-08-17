@@ -10,6 +10,7 @@ namespace VEngine {
 		m_entities.erase(std::remove_if(m_entities.begin(), m_entities.end(), [&, this](Entity* ent) {
 			if (ent->isPendingDestroy())
 			{
+				EventManager::get().emit<Events::OnEntityDestroyed>({ ent });
 				delete ent;
 				++count;
 				return true;
@@ -21,6 +22,21 @@ namespace VEngine {
 		return count > 0;
 	}
 
+	void Scene::destroy()
+	{
+		size_t count = 0;
+		m_entities.erase(std::remove_if(m_entities.begin(), m_entities.end(), [&, this](Entity* ent) {
+
+				EventManager::get().emit<Events::OnEntityDestroyed>({ ent });
+				delete ent;
+				++count;
+				return true;
+
+
+			}), m_entities.end());
+
+	}
+
 	void Scene::removeEntity(Entity* ent, bool immediate)
 	{
 		if (ent == nullptr)
@@ -30,6 +46,7 @@ namespace VEngine {
 		{
 			if (immediate)
 			{
+				EventManager::get().emit<Events::OnEntityDestroyed>({ ent });
 				m_entities.erase(std::remove(m_entities.begin(), m_entities.end(), ent), m_entities.end());
 				delete ent;
 			}
@@ -41,6 +58,7 @@ namespace VEngine {
 
 		if (immediate)
 		{
+			EventManager::get().emit<Events::OnEntityDestroyed>({ ent });
 			m_entities.erase(std::remove(m_entities.begin(), m_entities.end(), ent), m_entities.end());
 			delete ent;
 		}

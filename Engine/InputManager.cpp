@@ -2,7 +2,7 @@
 #include "Manager.h"
 #include "InputManager.h"
 #include "WindowManager.h"
-
+#include "SceneManager.h"
 //Systems
 
 
@@ -21,8 +21,8 @@ namespace VEngine {
 	static bool downMouse[NUM_MOUSEBUTTONS];
 	static bool upMouse[NUM_MOUSEBUTTONS];
 
-	static float mouseX = 0;
-	static float mouseY = 0;
+	static double mouseX = 0;
+	static double mouseY = 0;
 
 
 	void InputManager::clean()
@@ -41,49 +41,54 @@ namespace VEngine {
 
 	}
 
-	void InputManager::getInput(sf::Event event)
+	void InputManager::getMouseInput(GLFWwindow* window, int button, int action, int mods)
 	{
-		if (event.type == sf::Event::KeyPressed)
+		if (action == GLFW_PRESS)
 		{
-			int value = event.key.code;
-
-			if (value >= 0 && value <= 512)
+			if (button >= 0 && button <= 512)
 			{
-				inputs[value] = true;
-				downKeys[value] = true;
+				mouseInput[button] = true;
+				downMouse[button] = true;
 			}
 		}
-		else if (event.type == sf::Event::KeyReleased)
-		{
-			int value = event.key.code;
 
-			if (value >= 0 && value <= 512)
+		if (action == GLFW_RELEASE)
+		{
+			if (button >= 0 && button <= 512)
 			{
-				inputs[value] = false;
-				upKeys[value] = true;
+				mouseInput[button] = false;
+				upMouse[button] = true;
 			}
 		}
-		else if (event.type == sf::Event::MouseButtonReleased)
+	}
+
+	void InputManager::getMouseMoved(GLFWwindow* window, double xpos, double ypos)
+	{
+		mouseX = xpos;
+		mouseY = ypos;
+	}
+
+	void InputManager::getKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods)
+	{
+		clean();
+
+		if (action == GLFW_PRESS)
 		{
-			int value = event.mouseButton.button;
-
-			mouseInput[value] = false;
-			upMouse[value] = true;
+			if (key >= 0 && key <= 512)
+			{
+				inputs[key] = true;
+				downKeys[key] = true;
+			}
 		}
-		else if (event.type == sf::Event::MouseButtonPressed)
+
+		if (action == GLFW_RELEASE)
 		{
-			int value = event.mouseButton.button;
-
-			mouseInput[value] = true;
-			downMouse[value] = true;
-
+			if (key >= 0 && key <= 512)
+			{
+				inputs[key] = false;
+				upKeys[key] = true;
+			}
 		}
-		else if (event.type == sf::Event::MouseMoved)
-		{
-			mouseX = (float)event.mouseMove.x;
-			mouseY = (float)event.mouseMove.y;
-		}
-
 	}
 
 	bool InputManager::getKey(int keyCode)
@@ -122,40 +127,47 @@ namespace VEngine {
 		return pos;
 	}
 
-	void InputManager::setCursor(bool visible)
-	{
-		if (visible)
-			WindowManager::get().getHandle()->setMouseCursorVisible(true);
-		else
-			WindowManager::get().getHandle()->setMouseCursorVisible(false);
-	}
+	//void InputManager::setCursor(bool visible)
+	//{
+	//	if (visible)
+	//		WindowManager::get().getHandle()->setMouseCursorVisible(true);
+	//	else
+	//		WindowManager::get().getHandle()->setMouseCursorVisible(false);
+	//}
 
 	void InputManager::setMousePosition(glm::vec2 pos)
 	{
-		WindowManager::get().setMousePos((int)pos.x, (int)pos.y);
+		//WindowManager::get().setMousePos((int)pos.x, (int)pos.y);
 	}
-
+	void InputManager::init()
+	{
+		glfwSetKeyCallback(WindowManager::get().getHandle(), getKeyboardInput);
+		glfwSetCursorPosCallback(WindowManager::get().getHandle(), getMouseMoved);
+		glfwSetMouseButtonCallback(WindowManager::get().getHandle(), getMouseInput);
+	}
 	void InputManager::update()
 	{
 		clean();
+		glfwPollEvents();
+		
 
-		sf::Event event;
+		//sf::Event event;
 
-		while (WindowManager::get().getHandle()->pollEvent(event))
-		{
-			getInput(event);
+		//while (WindowManager::get().getHandle()->pollEvent(event))
+		//{
+		//	getInput(event);
 
-			if (event.type == sf::Event::Closed) {
-				WindowManager::get().Close();
-			}
-			else if (event.type == sf::Event::Resized)
-			{
-				WindowManager::get().setSize(event.size.width, event.size.height);
+		//	if (event.type == sf::Event::Closed) {
+		//		WindowManager::get().Close();
+		//	}
+		//	else if (event.type == sf::Event::Resized)
+		//	{
+		//		WindowManager::get().setSize(event.size.width, event.size.height);
 
 
-			}
+		//	}
 
-		}
+		//}
 	}
 
 

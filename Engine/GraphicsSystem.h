@@ -7,7 +7,7 @@
 #include <glm/gtx/transform.hpp>
 
 #include "GraphicsComponent.h"
-
+#include "VulkanRenderer.h"
 
 namespace VEngine {
 
@@ -20,19 +20,21 @@ namespace VEngine {
 	public:
 		virtual ~GraphicsSystem() {}
 
-		virtual void init(class Scene* scene);
+		virtual void init();
 
-		virtual void shutdown(class Scene* scene);
+		virtual void shutdown();
 
-		virtual void tick(class Scene* scene);
+		virtual void tick();
 
-		virtual void receive(class Scene* scene, const Events::OnEntityInit& event);
+		virtual void receive(const Events::OnEntityInit& event);
 
-		virtual void receive(class Scene* scene, const Events::OnEntityCreated& event);
+		virtual void receive(const Events::OnEntityCreated& event);
 
-		virtual void receive(class Scene* scene, const Events::OnEntityDestroyed& event);
+		virtual void receive(const Events::OnEntityDestroyed& event);
 
-		virtual void receive(class Scene* scene, const Events::OnComponentRemoved<GraphicsComponent>& event);
+		virtual void receive(const Events::OnComponentRemoved<GraphicsComponent>& event);
+	private:
+		VulkanRenderer* m_renderer;
 	};
 
 }
